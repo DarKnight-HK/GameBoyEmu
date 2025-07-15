@@ -89,8 +89,6 @@ private:
   std::unique_ptr<RomHeader> header;
 
 public:
-  Cart();
-
   const std::string &getFilename() const { return filename; }
   void setFilename(const std::string &fname) { filename = fname; }
 

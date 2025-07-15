@@ -9,8 +9,7 @@
 
 Emu::Emu()
     : running(false), paused(false), ticks(0), m_memory(), m_bus(m_memory),
-      m_cpu(m_bus) {}
-
+      m_cpu(m_bus), m_cart() {}
 void delay(uint32_t ms) { SDL_Delay(ms); }
 
 int Emu::emu_run(int argc, char **argv) {
@@ -20,9 +19,9 @@ int Emu::emu_run(int argc, char **argv) {
     std::cout << "Usage: emu <rom_file>\n";
     return -1;
   }
-  Cart cart = Cart();
-  cart.load_cart(argv[1]);
-
+  if (m_cart.load_cart(argv[1]) != true) {
+    return -3;
+  }
   SDL_Init(SDL_INIT_VIDEO);
   std::cout << "SDL INIT\n";
   TTF_Init();

@@ -1,5 +1,6 @@
 #pragma once
 #include "bus.h"
+#include "cart.h"
 #include "cpu.h"
 #include "memory.h"
 #include <cstdint>
@@ -17,4 +18,5 @@ private:
   Memory m_memory;
   Bus m_bus;
   CPU m_cpu;
+  Cart m_cart;
 };

@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-  Emu emulator;
+  Emu emulator = Emu();
 
   int result = emulator.emu_run(argc, argv);
 

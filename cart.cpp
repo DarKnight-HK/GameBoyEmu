@@ -167,23 +167,31 @@ bool Cart::load_cart(std::string cart) {
   this->romData.resize(size);
   // Convert the binary data to vector<uint8_t>
   file.read(reinterpret_cast<char *>(this->romData.data()), size);
+  std::cout << this->romData.size();
   parseHeader();
 
   std::cout << "Cartridge Loaded\n";
-  std::cout << "Title    : " << this->header->getTitle();
-  std::cout << "Type     : " << this->header->getCartTypeString();
-  std::cout << "ROM Size : " << this->header->getRomSize();
-  std::cout << "RAM Size : " << this->header->getRamSize();
-  std::cout << "LIC Code : " << this->header->getLicCodeString();
-  std::cout << "ROM Vers : " << this->header->getVersion();
+  std::cout << "Title    : " << this->header->getTitle() << std::endl;
+  std::cout << "Type     : " << this->header->getCartTypeString() << std::endl;
+  std::cout << "ROM Size : "
+            << 32 * (static_cast<int>(1 << this->header->getRomSize()))
+            << " KB\n";
+  std::cout << "RAM Size : " << std::hex
+            << static_cast<int>(this->header->getRamSize()) << std::endl;
+  std::cout << "LIC Code : " << std::hex
+            << static_cast<int>(this->header->getLicCode()) << " "
+            << this->header->getLicCodeString() << std::endl;
+  std::cout << "ROM Vers : " << std::hex
+            << static_cast<int>(this->header->getVersion()) << std::endl;
 
   uint16_t x = 0;
   for (uint16_t i = 0x0134; i <= 0x014C; i++) {
     x = x - this->romData[i] - 1;
   }
 
-  std::cout << "Checksum : " << this->header->getChecksum() << "\n";
-  (x & 0xFF) ? std::cout << "PASSED" : std::cout << "FAILED";
+  std::cout << "Checksum : " << std::hex
+            << static_cast<int>(this->header->getChecksum());
+  (x & 0xFF) ? std::cout << " PASSED" : std::cout << " FAILED";
   std::cout << std::endl;
 
   return true;
