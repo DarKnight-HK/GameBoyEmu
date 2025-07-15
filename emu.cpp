@@ -1,11 +1,15 @@
 #include "emu.h"
+#include "bus.h"
 #include "cart.h"
+#include "memory.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <cstdint>
 #include <iostream>
 
-Emu::Emu(CPU &cpu) : running(false), paused(false), ticks(0), cpu(cpu) {}
+Emu::Emu()
+    : running(false), paused(false), ticks(0), m_memory(), m_bus(m_memory),
+      m_cpu(m_bus) {}
 
 void delay(uint32_t ms) { SDL_Delay(ms); }
 
@@ -34,7 +38,7 @@ int Emu::emu_run(int argc, char **argv) {
       delay(10);
       continue;
     }
-    if (!cpu.step()) {
+    if (!m_cpu.step()) {
       std::cout << "CPU Stopped\n";
       return -3;
     }

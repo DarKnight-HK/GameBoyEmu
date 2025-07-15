@@ -1,14 +1,20 @@
 #pragma once
+#include "bus.h"
 #include "cpu.h"
+#include "memory.h"
 #include <cstdint>
+
 class Emu {
 public:
-  Emu(CPU &cpu);
+  Emu(); // Constructor
+
   bool paused;
   bool running;
   uint64_t ticks;
   int emu_run(int argc, char **argv);
 
 private:
-  CPU &cpu;
+  Memory m_memory;
+  Bus m_bus;
+  CPU m_cpu;
 };
