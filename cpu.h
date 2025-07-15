@@ -1,10 +1,10 @@
 #pragma once
-#include "memory.h"
+#include "bus.h"
 #include <cstdint>
 #include <iostream>
 class CPU {
 public:
-  CPU(Memory &memory);
+  CPU(Bus &bus);
   // 8-bit registers
   uint8_t A; // Accumulator
   uint8_t B;
@@ -30,7 +30,7 @@ public:
   static const uint8_t FLAG_H = 0x20; // Half Carry Flag (Bit 5)
   static const uint8_t FLAG_C = 0x10; // Carry Flag (Bit 4)
 private:
-  Memory &m_memory;
+  Bus &bus;
 
   // Helper method to combine two 8-bit registers into a 16-bit word
   uint16_t getBC() { return (static_cast<uint16_t>(B) << 8) | C; }

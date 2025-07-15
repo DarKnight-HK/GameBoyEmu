@@ -1,7 +1,7 @@
 #include "cpu.h"
 #include <cstdint>
 
-CPU::CPU(Memory &memory) : m_memory(memory) {
+CPU::CPU(Bus &bus) : bus(bus) {
   // Initialize registers to their power-on state for the Game Boy
   // These values are typical for the Game Boy's boot ROM
   A = 0x01;
@@ -35,7 +35,7 @@ void CPU::setFlag(uint8_t flag, bool set) {
 bool CPU::getFlag(uint8_t flag) { return (F & flag) != 0; }
 
 int CPU::step() {
-  uint8_t opcode = m_memory.readByte(PC);
+  uint8_t opcode = bus.readByte(PC);
   PC++;
   std::cout << "Fetched opcode: 0x" << std::hex << static_cast<int>(opcode)
             << " at PC: 0x" << std::hex << static_cast<int>(PC - 1)
