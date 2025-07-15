@@ -76,12 +76,6 @@ void RomHeader::setGlobalChecksum(uint16_t cksum) { globalChecksum = cksum; }
 
 ///////////////////////////////Cart//////////////////////////////////////////
 
-// Constructer
-Cart::Cart(const std::string &fname, std::vector<uint8_t> &&data)
-    : filename(fname), romData(std::move(data)) {
-  parseHeader();
-}
-
 // Parse Header
 
 void Cart::parseHeader() {

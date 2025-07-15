@@ -20,13 +20,8 @@ int Emu::emu_run(int argc, char **argv) {
     std::cout << "Usage: emu <rom_file>\n";
     return -1;
   }
-  //
-  // if (!cart_load(argv[1])) {
-  //   printf("Failed to load ROM file: %s\n", argv[1]);
-  //   return -2;
-  // }
-
-  // printf("Cart loaded..\n");
+  Cart cart = Cart();
+  cart.load_cart(argv[1]);
 
   SDL_Init(SDL_INIT_VIDEO);
   std::cout << "SDL INIT\n";
