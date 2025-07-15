@@ -1,7 +1,9 @@
 #pragma once
 #include <array>
 #include <cstdint>
+#include <memory>
 #include <string>
+#include <vector>
 
 class RomHeader {
 private:
@@ -75,4 +77,33 @@ public:
   // Global Checksum
   uint16_t getGlobalChecksum() const;
   void setGlobalChecksum(uint16_t cksum);
+  std::string_view getCartTypeString();
+
+  std::string_view getLicCodeString();
+};
+
+class Cart {
+private:
+  std::string filename;
+  std::vector<uint8_t> romData;
+  std::unique_ptr<RomHeader> header;
+
+public:
+  Cart(const std::string &fname, std::vector<uint8_t> &&data);
+
+  const std::string &getFilename() const { return filename; }
+  void setFilename(const std::string &fname) { filename = fname; }
+
+  const std::vector<uint8_t> &getRomData() const { return romData; }
+  void setRomData(std::vector<uint8_t> &&data) {
+    romData = std::move(data);
+    parseHeader();
+  }
+
+  bool load_cart(std::string cart);
+
+  const RomHeader *getHeader() const { return header.get(); }
+
+private:
+  void parseHeader();
 };
