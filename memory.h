@@ -13,8 +13,6 @@ public:
 
   uint16_t readWord(uint16_t address);
   void writeWord(uint16_t address, uint16_t value);
-  //@param romData A vector of bytes representing the ROM content
-  void loadROM(const std::vector<uint8_t> &romData);
 
 private:
   // The main memory array, representing 64KB of addressable memory.
