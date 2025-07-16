@@ -3,7 +3,8 @@
 #include <iostream>
 #include <vector>
 
-const uint16_t MEMORY_SIZE = 0x10000; // 65536 bytes (0x0000 to 0xFFFF)
+const uint16_t MEMORY_SIZE =
+    static_cast<uint16_t>(0x10000); // 65536 bytes (0x0000 to 0xFFFF)
 
 class Memory {
 public:

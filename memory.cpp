@@ -1,5 +1,4 @@
 #include "memory.h"
-#include <algorithm>
 #include <cstdint>
 #include <vector>
 Memory::Memory() : m_memory(MEMORY_SIZE, 0) {}
