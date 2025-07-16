@@ -148,6 +148,21 @@ std::string_view RomHeader::getLicCodeString() {
   return "UNKNOWN";
 }
 
+uint8_t Cart::cart_read(uint16_t address) {
+  // for now ROM ONLY type supported
+  if (address < 0x8000) {
+    return romData[address];
+  }
+  return 0xFF;
+}
+
+void Cart::cart_write(uint16_t address, uint8_t value) {
+  if (address < 0x8000) {
+    romData[address] = value;
+    return;
+  }
+}
+
 bool Cart::load_cart(std::string cart) {
   this->filename = cart;
 

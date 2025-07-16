@@ -91,7 +91,8 @@ private:
 public:
   const std::string &getFilename() const { return filename; }
   void setFilename(const std::string &fname) { filename = fname; }
-
+  void cart_write(uint16_t address, uint8_t value);
+  uint8_t cart_read(uint16_t address);
   const std::vector<uint8_t> &getRomData() const { return romData; }
   void setRomData(std::vector<uint8_t> &&data) {
     romData = std::move(data);
