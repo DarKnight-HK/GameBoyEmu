@@ -73,7 +73,7 @@ enum class InstructionType : uint8_t {
   JP,
   PUSH,
   RET,
-  CB, // Prefix for CB-prefixed instructions
+  CB,
   CALL,
   RETI,
   LDH,
@@ -81,8 +81,8 @@ enum class InstructionType : uint8_t {
   DI,
   EI,
   RST,
-  ERR, // Error/Unknown instruction
-  // CB instructions (moved to their own enum or just listed here)
+  ERR,
+  // CB instructions
   RLC,
   RRC,
   RL,

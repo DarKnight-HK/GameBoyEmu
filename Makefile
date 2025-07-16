@@ -16,7 +16,7 @@ CXXFLAGS = -Wall -Wextra -std=c++17 -g -I. $(shell pkg-config --cflags sdl2 SDL2
 LDFLAGS = $(shell pkg-config --libs sdl2 SDL2_ttf)
 
 # Source files
-SRCS = main.cpp emu.cpp cpu.cpp bus.cpp memory.cpp cart.cpp ppu.cpp timer.cpp
+SRCS = main.cpp emu.cpp cpu.cpp bus.cpp memory.cpp cart.cpp ppu.cpp timer.cpp instructions.cpp
 
 # Object files (generated from source files)
 OBJS = $(SRCS:.cpp=.o)
