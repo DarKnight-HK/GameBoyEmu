@@ -1,47 +1,48 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
 
 enum class AddrMode : uint8_t {
-  IMP,   // Implied addressing (no operand)
-  R_D16, // Register to 16-bit immediate data (e.g., LD BC, d16)
-  R_R,   // Register to Register (e.g., LD A, B)
-  MR_R,  // Memory at Register to Register (e.g., LD (BC), A)
-  R,     // Register (e.g., INC B)
-  R_D8,  // Register to 8-bit immediate data (e.g., LD A, d8)
-  R_MR,  // Register to Memory at Register (e.g., LD A, (BC))
-  R_HLI, // Register to Memory at HL, then increment HL (e.g., LD A, (HLI))
-  R_HLD, // Register to Memory at HL, then decrement HL (e.g., LD A, (HLD))
-  HLI_R, // Memory at HL to Register, then increment HL (e.g., LD (HLI), A)
-  HLD_R, // Memory at HL to Register, then decrement HL (e.g., LD (HLD), A)
-  R_A8,  // Register to Memory at (0xFF00 + 8-bit immediate) (e.g., LDH A, (a8))
-  A8_R,  // Memory at (0xFF00 + 8-bit immediate) to Register (e.g., LDH (a8), A)
-  HL_SPR, // HL to SP + signed 8-bit immediate (e.g., LD HL, SP+r8)
-  D16,    // 16-bit immediate data (e.g., JP d16)
-  D8,     // 8-bit immediate data (e.g., JR d8)
-  D16_R,  // 16-bit immediate data to Register (e.g., LD (a16), SP)
-  MR_D8,  // Memory at Register to 8-bit immediate data (e.g., LD (HL), d8)
-  MR,     // Memory at Register (e.g., INC (HL))
-  A16_R,  // 16-bit immediate address to Register (e.g., LD (a16), A)
-  R_A16   // Register to 16-bit immediate address (e.g., LD A, (a16))
+  IMP,
+  R_D16,
+  R_R,
+  MR_R,
+  R,
+  R_D8,
+  R_MR,
+  R_HLI,
+  R_HLD,
+  HLI_R,
+  HLD_R,
+  R_A8,
+  A8_R,
+  HL_SPR,
+  D16,
+  D8,
+  D16_R,
+  MR_D8,
+  MR,
+  A16_R,
+  R_A16
 };
 
 enum class RegType : uint8_t {
-  NONE, // No register
-  A,    // Accumulator (8-bit)
-  F,    // Flags register (8-bit)
-  B,    // B register (8-bit)
-  C,    // C register (8-bit)
-  D,    // D register (8-bit)
-  E,    // E register (8-bit)
-  H,    // H register (8-bit)
-  L,    // L register (8-bit)
-  AF,   // AF register pair (16-bit)
-  BC,   // BC register pair (16-bit)
-  DE,   // DE register pair (16-bit)
-  HL,   // HL register pair (16-bit)
-  SP,   // Stack Pointer (16-bit)
-  PC    // Program Counter (16-bit)
+  NONE,
+  A,
+  F,
+  B,
+  C,
+  D,
+  E,
+  H,
+  L,
+  AF,
+  BC,
+  DE,
+  HL,
+  SP,
+  PC
 };
 
 enum class InstructionType : uint8_t {
@@ -82,7 +83,7 @@ enum class InstructionType : uint8_t {
   EI,
   RST,
   ERR,
-  // CB instructions
+
   RLC,
   RRC,
   RL,
@@ -96,13 +97,7 @@ enum class InstructionType : uint8_t {
   SET
 };
 
-enum class CondType : uint8_t {
-  NONE, // No condition (always true)
-  NZ,   // Not Zero (Z flag is 0)
-  Z,    // Zero (Z flag is 1)
-  NC,   // Not Carry (C flag is 0)
-  C     // Carry (C flag is 1)
-};
+enum class CondType : uint8_t { NONE, NZ, Z, NC, C };
 
 class Instruction {
 public:
@@ -113,16 +108,12 @@ public:
       : type(type), mode(mode), reg1(reg1), reg2(reg2), cond(cond),
         param(param) {}
 
-  // --- Getters ---
-
   InstructionType getType() const;
   AddrMode getMode() const;
   RegType getReg1() const;
   RegType getReg2() const;
   CondType getCond() const;
   uint8_t getParam() const;
-
-  // --- Setters ---
 
   void setType(InstructionType newType);
   void setMode(AddrMode newMode);
@@ -138,4 +129,306 @@ private:
   RegType reg2;
   CondType cond;
   uint8_t param;
+};
+
+const std::array<Instruction, 0x100> instructions = {
+
+    Instruction{InstructionType::NOP, AddrMode::IMP},
+    Instruction{InstructionType::LD, AddrMode::R_D16, RegType::BC},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::BC, RegType::A},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::BC},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::B},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_D8, RegType::B},
+    Instruction{InstructionType::RLCA, AddrMode::IMP},
+    Instruction{InstructionType::LD, AddrMode::A16_R, RegType::NONE,
+                RegType::SP},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::HL, RegType::BC},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::A, RegType::BC},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::BC},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::C},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_D8, RegType::C},
+    Instruction{InstructionType::RRCA, AddrMode::IMP},
+
+    Instruction{InstructionType::STOP, AddrMode::D8},
+    Instruction{InstructionType::LD, AddrMode::R_D16, RegType::DE},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::DE, RegType::A},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::DE},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::D},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_D8, RegType::D},
+    Instruction{InstructionType::RLA, AddrMode::IMP},
+    Instruction{InstructionType::JR, AddrMode::D8},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::HL, RegType::DE},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::A, RegType::DE},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::DE},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::E},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_D8, RegType::E},
+    Instruction{InstructionType::RRA, AddrMode::IMP},
+
+    Instruction{InstructionType::JR, AddrMode::D8, RegType::NONE, RegType::NONE,
+                CondType::NZ},
+    Instruction{InstructionType::LD, AddrMode::R_D16, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::HLI_R, RegType::HL, RegType::A},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::HL},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::H},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_D8, RegType::H},
+    Instruction{InstructionType::DAA, AddrMode::IMP},
+    Instruction{InstructionType::JR, AddrMode::D8, RegType::NONE, RegType::NONE,
+                CondType::Z},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::HL, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_HLI, RegType::A, RegType::HL},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::HL},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::L},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_D8, RegType::L},
+    Instruction{InstructionType::CPL, AddrMode::IMP},
+
+    Instruction{InstructionType::JR, AddrMode::D8, RegType::NONE, RegType::NONE,
+                CondType::NC},
+    Instruction{InstructionType::LD, AddrMode::R_D16, RegType::SP},
+    Instruction{InstructionType::LD, AddrMode::HLD_R, RegType::HL, RegType::A},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::SP},
+    Instruction{InstructionType::INC, AddrMode::MR, RegType::HL},
+    Instruction{InstructionType::DEC, AddrMode::MR, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::MR_D8, RegType::HL},
+    Instruction{InstructionType::SCF, AddrMode::IMP},
+    Instruction{InstructionType::JR, AddrMode::D8, RegType::NONE, RegType::NONE,
+                CondType::C},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::HL, RegType::SP},
+    Instruction{InstructionType::LD, AddrMode::R_HLD, RegType::A, RegType::HL},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::SP},
+    Instruction{InstructionType::INC, AddrMode::R, RegType::A},
+    Instruction{InstructionType::DEC, AddrMode::R, RegType::A},
+    Instruction{InstructionType::LD, AddrMode::R_D8, RegType::A},
+    Instruction{InstructionType::CCF, AddrMode::IMP},
+
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::B, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::B, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::B, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::B, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::B, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::B, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::B, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::B, RegType::A},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::C, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::C, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::C, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::C, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::C, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::C, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::C, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::C, RegType::A},
+
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::D, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::D, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::D, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::D, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::D, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::D, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::D, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::D, RegType::A},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::E, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::E, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::E, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::E, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::E, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::E, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::E, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::E, RegType::A},
+
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::H, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::H, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::H, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::H, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::H, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::H, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::H, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::H, RegType::A},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::L, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::L, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::L, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::L, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::L, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::L, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::L, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::L, RegType::A},
+
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::HL, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::HL, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::HL, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::HL, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::HL, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::HL, RegType::L},
+    Instruction{InstructionType::HALT, AddrMode::IMP},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::HL, RegType::A},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_R, RegType::A, RegType::A},
+
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::ADD, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::ADD, AddrMode::R_R, RegType::A, RegType::A},
+    Instruction{InstructionType::ADC, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::ADC, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::ADC, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::ADC, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::ADC, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::ADC, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::ADC, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::ADC, AddrMode::R_R, RegType::A, RegType::A},
+
+    Instruction{InstructionType::SUB, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::SUB, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::SUB, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::SUB, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::SUB, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::SUB, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::SUB, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::SUB, AddrMode::R_R, RegType::A, RegType::A},
+    Instruction{InstructionType::SBC, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::SBC, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::SBC, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::SBC, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::SBC, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::SBC, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::SBC, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::SBC, AddrMode::R_R, RegType::A, RegType::A},
+
+    Instruction{InstructionType::AND, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::AND, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::AND, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::AND, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::AND, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::AND, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::AND, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::AND, AddrMode::R_R, RegType::A, RegType::A},
+    Instruction{InstructionType::XOR, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::XOR, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::XOR, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::XOR, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::XOR, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::XOR, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::XOR, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::XOR, AddrMode::R_R, RegType::A, RegType::A},
+
+    Instruction{InstructionType::OR, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::OR, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::OR, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::OR, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::OR, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::OR, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::OR, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::OR, AddrMode::R_R, RegType::A, RegType::A},
+    Instruction{InstructionType::CP, AddrMode::R_R, RegType::A, RegType::B},
+    Instruction{InstructionType::CP, AddrMode::R_R, RegType::A, RegType::C},
+    Instruction{InstructionType::CP, AddrMode::R_R, RegType::A, RegType::D},
+    Instruction{InstructionType::CP, AddrMode::R_R, RegType::A, RegType::E},
+    Instruction{InstructionType::CP, AddrMode::R_R, RegType::A, RegType::H},
+    Instruction{InstructionType::CP, AddrMode::R_R, RegType::A, RegType::L},
+    Instruction{InstructionType::CP, AddrMode::R_MR, RegType::A, RegType::HL},
+    Instruction{InstructionType::CP, AddrMode::R_R, RegType::A, RegType::A},
+
+    Instruction{InstructionType::RET, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NZ},
+    Instruction{InstructionType::POP, AddrMode::R, RegType::BC},
+    Instruction{InstructionType::JP, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::NZ},
+    Instruction{InstructionType::JP, AddrMode::D16},
+    Instruction{InstructionType::CALL, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::NZ},
+    Instruction{InstructionType::PUSH, AddrMode::R, RegType::BC},
+    Instruction{InstructionType::ADD, AddrMode::R_D8, RegType::A},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x00},
+    Instruction{InstructionType::RET, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::Z},
+    Instruction{InstructionType::RET, AddrMode::IMP},
+    Instruction{InstructionType::JP, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::Z},
+    Instruction{InstructionType::CB, AddrMode::D8},
+    Instruction{InstructionType::CALL, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::Z},
+    Instruction{InstructionType::CALL, AddrMode::D16},
+    Instruction{InstructionType::ADC, AddrMode::R_D8, RegType::A},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x08},
+
+    Instruction{InstructionType::RET, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NC},
+    Instruction{InstructionType::POP, AddrMode::R, RegType::DE},
+    Instruction{InstructionType::JP, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::NC},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::CALL, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::NC},
+    Instruction{InstructionType::PUSH, AddrMode::R, RegType::DE},
+    Instruction{InstructionType::SUB, AddrMode::R_D8, RegType::A},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x10},
+    Instruction{InstructionType::RET, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::C},
+    Instruction{InstructionType::RETI, AddrMode::IMP},
+    Instruction{InstructionType::JP, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::C},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::CALL, AddrMode::D16, RegType::NONE,
+                RegType::NONE, CondType::C},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::SBC, AddrMode::R_D8, RegType::A},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x18},
+
+    Instruction{InstructionType::LDH, AddrMode::A8_R, RegType::NONE,
+                RegType::A},
+    Instruction{InstructionType::POP, AddrMode::R, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::MR_R, RegType::C, RegType::A},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::PUSH, AddrMode::R, RegType::HL},
+    Instruction{InstructionType::AND, AddrMode::D8},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x20},
+    Instruction{InstructionType::ADD, AddrMode::R_D8, RegType::SP},
+    Instruction{InstructionType::JP, AddrMode::MR, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::A16_R, RegType::NONE,
+                RegType::A},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::XOR, AddrMode::D8},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x28},
+
+    Instruction{InstructionType::LDH, AddrMode::R_A8, RegType::A},
+    Instruction{InstructionType::POP, AddrMode::R, RegType::AF},
+    Instruction{InstructionType::LD, AddrMode::R_MR, RegType::A, RegType::C},
+    Instruction{InstructionType::DI, AddrMode::IMP},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::PUSH, AddrMode::R, RegType::AF},
+    Instruction{InstructionType::OR, AddrMode::D8},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x30},
+    Instruction{InstructionType::LD, AddrMode::HL_SPR, RegType::HL,
+                RegType::SP},
+    Instruction{InstructionType::LD, AddrMode::R, RegType::SP, RegType::HL},
+    Instruction{InstructionType::LD, AddrMode::R_A16, RegType::A},
+    Instruction{InstructionType::EI, AddrMode::IMP},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::ERR},
+    Instruction{InstructionType::CP, AddrMode::D8},
+    Instruction{InstructionType::RST, AddrMode::IMP, RegType::NONE,
+                RegType::NONE, CondType::NONE, 0x38},
 };

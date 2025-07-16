@@ -1,5 +1,6 @@
 #pragma once
 #include "bus.h"
+#include "instructions.h"
 #include <cstdint>
 #include <iostream>
 #include <memory>
@@ -61,6 +62,8 @@ private:
 class CPU_Context {
 private:
   std::unique_ptr<CPU> m_cpu;
+
+  std::unique_ptr<Instruction> curr_inst;
 
   uint16_t fetch_data;
 
