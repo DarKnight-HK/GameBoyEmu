@@ -103,3 +103,39 @@ enum class CondType : uint8_t {
   NC,   // Not Carry (C flag is 0)
   C     // Carry (C flag is 1)
 };
+
+class Instruction {
+public:
+  Instruction(InstructionType type = InstructionType::NONE,
+              AddrMode mode = AddrMode::IMP, RegType reg1 = RegType::NONE,
+              RegType reg2 = RegType::NONE, CondType cond = CondType::NONE,
+              uint8_t param = 0)
+      : type(type), mode(mode), reg1(reg1), reg2(reg2), cond(cond),
+        param(param) {}
+
+  // --- Getters ---
+
+  InstructionType getType() const;
+  AddrMode getMode() const;
+  RegType getReg1() const;
+  RegType getReg2() const;
+  CondType getCond() const;
+  uint8_t getParam() const;
+
+  // --- Setters ---
+
+  void setType(InstructionType newType);
+  void setMode(AddrMode newMode);
+  void setReg1(RegType newReg1);
+  void setReg2(RegType newReg2);
+  void setCond(CondType newCond);
+  void setParam(uint8_t newParam);
+
+private:
+  InstructionType type;
+  AddrMode mode;
+  RegType reg1;
+  RegType reg2;
+  CondType cond;
+  uint8_t param;
+};
