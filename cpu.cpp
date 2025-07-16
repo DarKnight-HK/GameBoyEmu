@@ -34,6 +34,25 @@ void CPU::setFlag(uint8_t flag, bool set) {
 // Gets the state of a specific flag from the F register.
 bool CPU::getFlag(uint8_t flag) { return (F & flag) != 0; }
 
+void CPU_Context::setHalted(bool state) { halted = state; }
+bool CPU_Context::isHalted() const { return halted; }
+void CPU_Context::setStepping(bool state) { stepping = state; }
+bool CPU_Context::isStepping() const { return stepping; }
+const CPU *CPU_Context::getCPU() const { return m_cpu.get(); }
+void CPU_Context::setCPU(std::unique_ptr<CPU> cpu) { m_cpu = std::move(cpu); }
+
+uint16_t CPU_Context::getFetchData() const { return fetch_data; }
+
+uint16_t CPU_Context::getMemDest() const { return mem_dest; }
+
+uint8_t CPU_Context::getCurrOpcode() const { return curr_opcode; }
+
+void CPU_Context::setFetchData(uint16_t data) { fetch_data = data; }
+
+void CPU_Context::setMemDest(uint16_t dest) { mem_dest = dest; }
+
+void CPU_Context::setCurrOpcode(uint8_t opcode) { curr_opcode = opcode; }
+
 int CPU::step() {
   std::cout << "CPU not implemented\n";
   return 0;

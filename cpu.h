@@ -2,6 +2,7 @@
 #include "bus.h"
 #include <cstdint>
 #include <iostream>
+#include <memory>
 class CPU {
 public:
   CPU(Bus &bus);
@@ -55,4 +56,41 @@ private:
     A = (value >> 8) & 0xFF;
     F = value & 0xF0;
   } // Lower 4 bits of F are always 0
+};
+
+class CPU_Context {
+private:
+  std::unique_ptr<CPU> m_cpu;
+
+  uint16_t fetch_data;
+
+  uint16_t mem_dest;
+
+  uint8_t curr_opcode;
+
+  bool halted;
+
+  bool stepping;
+
+public:
+  void setHalted(bool state);
+  bool isHalted() const;
+
+  void setStepping(bool state);
+  bool isStepping() const;
+
+  const CPU *getCPU() const;
+  void setCPU(std::unique_ptr<CPU> cpu);
+
+  uint16_t getFetchData() const;
+
+  uint16_t getMemDest() const;
+
+  uint8_t getCurrOpcode() const;
+
+  void setFetchData(uint16_t data);
+
+  void setMemDest(uint16_t dest);
+
+  void setCurrOpcode(uint8_t opcode);
 };
