@@ -6,6 +6,7 @@
 #include <memory>
 class CPU {
 public:
+  Bus &bus;
   CPU(Bus &bus);
   // 8-bit registers
   uint8_t A; // Accumulator
@@ -20,7 +21,6 @@ public:
   // 16-bit registers
   uint16_t SP; // Stack Pointer
   uint16_t PC; // Program Counter
-  int step();
 
   // Helper methods to set and get individual flag bits
   void setFlag(uint8_t flag, bool set);
@@ -32,8 +32,6 @@ public:
   static const uint8_t FLAG_H = 0x20; // Half Carry Flag (Bit 5)
   static const uint8_t FLAG_C = 0x10; // Carry Flag (Bit 4)
 private:
-  Bus &bus;
-
   // Helper method to combine two 8-bit registers into a 16-bit word
   uint16_t getBC() { return (static_cast<uint16_t>(B) << 8) | C; }
   uint16_t getDE() { return (static_cast<uint16_t>(D) << 8) | E; }
@@ -63,8 +61,6 @@ class CPU_Context {
 private:
   std::unique_ptr<CPU> m_cpu;
 
-  std::unique_ptr<Instruction> curr_inst;
-
   uint16_t fetch_data;
 
   uint16_t mem_dest;
@@ -75,16 +71,35 @@ private:
 
   bool stepping;
 
+  bool destIsMem;
+
 public:
+  Instruction curr_inst;
+
   CPU_Context(std::unique_ptr<CPU> cpu);
 
+  void fetchData();
+
+  void fetchInstruction();
+
+  void decode();
+
+  bool step();
+
   void setHalted(bool state);
+
   bool isHalted() const;
 
   void setStepping(bool state);
+
   bool isStepping() const;
 
+  bool isDestMem() const;
+
+  void setIsDestMem(bool state);
+
   CPU *getCPU() const;
+
   void setCPU(std::unique_ptr<CPU> cpu);
 
   uint16_t getFetchData() const;

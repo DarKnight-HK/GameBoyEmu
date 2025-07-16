@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "instructions.h"
 #include <cstdint>
 #include <memory>
 
@@ -60,36 +61,27 @@ void CPU_Context::setMemDest(uint16_t dest) { mem_dest = dest; }
 
 void CPU_Context::setCurrOpcode(uint8_t opcode) { curr_opcode = opcode; }
 
-int CPU::step() {
-  std::cout << "CPU not implemented\n";
-  return 0;
-  // uint8_t opcode = bus.readByte(PC);
-  // PC++;
-  // std::cout << "Fetched opcode: 0x" << std::hex << static_cast<int>(opcode)
-  //           << " at PC: 0x" << std::hex << static_cast<int>(PC - 1)
-  //           << std::endl;
-  //
-  // // Placeholder for instruction execution.
-  // // This is where the core logic for each Game Boy instruction will go.
-  // // For example, if opcode == 0x00 (NOP - No Operation), it would do
-  // nothing.
-  // // If opcode == 0x3E (LD A, n), it would read the next byte into register
-  // A.
-  //
-  // // Example of a simple instruction (NOP - No Operation, Opcode 0x00)
-  // if (opcode == 0x00) {
-  //   // NOP takes 4 cycles
-  //   return 4;
-  // }
-  // // Add more instruction implementations here as you go!
-  //
-  // // For any unimplemented opcode, we'll print a warning and return a default
-  // // cycle count.
-  // std::cerr << "Warning: Unimplemented opcode 0x" << std::hex
-  //           << static_cast<int>(opcode) << " at address 0x" << std::hex
-  //           << static_cast<int>(PC - 1) << std::endl;
-  //
-  // // Return a default number of cycles for now.
-  // // Real instructions have varying cycle counts.
-  // return 4;
+void CPU_Context::setIsDestMem(bool state) { destIsMem = state; }
+
+bool CPU_Context::isDestMem() const { return destIsMem; }
+
+void CPU_Context::fetchInstruction() {
+
+  setCurrOpcode(m_cpu->bus.readByte(m_cpu->PC++));
+  curr_inst = instructions[curr_opcode];
+}
+
+void CPU_Context::fetchData() {
+  setMemDest(0);
+  setIsDestMem(false);
+  switch (curr_inst.getMode()) {
+  case AddrMode::IMP:
+    return;
+  case AddrMode::R:
+  }
+}
+
+bool CPU_Context::step() {
+  if (!halted) {
+  }
 }
