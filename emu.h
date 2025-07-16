@@ -17,6 +17,6 @@ public:
 private:
   Memory m_memory;
   Bus m_bus;
-  CPU m_cpu;
+  CPU_Context m_cpuContext;
   Cart m_cart;
 };

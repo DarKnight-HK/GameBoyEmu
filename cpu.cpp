@@ -1,5 +1,6 @@
 #include "cpu.h"
 #include <cstdint>
+#include <memory>
 
 CPU::CPU(Bus &bus) : bus(bus) {
   // Initialize registers to their power-on state for the Game Boy
@@ -34,11 +35,17 @@ void CPU::setFlag(uint8_t flag, bool set) {
 // Gets the state of a specific flag from the F register.
 bool CPU::getFlag(uint8_t flag) { return (F & flag) != 0; }
 
+CPU_Context::CPU_Context(std::unique_ptr<CPU> cpu)
+    : halted(false), stepping(false), curr_opcode(0), mem_dest(0),
+      fetch_data(0) {
+  m_cpu = std::move(cpu);
+}
+
 void CPU_Context::setHalted(bool state) { halted = state; }
 bool CPU_Context::isHalted() const { return halted; }
 void CPU_Context::setStepping(bool state) { stepping = state; }
 bool CPU_Context::isStepping() const { return stepping; }
-const CPU *CPU_Context::getCPU() const { return m_cpu.get(); }
+CPU *CPU_Context::getCPU() const { return m_cpu.get(); }
 void CPU_Context::setCPU(std::unique_ptr<CPU> cpu) { m_cpu = std::move(cpu); }
 
 uint16_t CPU_Context::getFetchData() const { return fetch_data; }

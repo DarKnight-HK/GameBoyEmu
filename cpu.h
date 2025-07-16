@@ -73,13 +73,15 @@ private:
   bool stepping;
 
 public:
+  CPU_Context(std::unique_ptr<CPU> cpu);
+
   void setHalted(bool state);
   bool isHalted() const;
 
   void setStepping(bool state);
   bool isStepping() const;
 
-  const CPU *getCPU() const;
+  CPU *getCPU() const;
   void setCPU(std::unique_ptr<CPU> cpu);
 
   uint16_t getFetchData() const;

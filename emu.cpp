@@ -1,15 +1,17 @@
 #include "emu.h"
 #include "bus.h"
 #include "cart.h"
+#include "cpu.h"
 #include "memory.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <cstdint>
 #include <iostream>
+#include <memory>
 
 Emu::Emu()
     : running(false), paused(false), ticks(0), m_memory(), m_bus(m_memory),
-      m_cpu(m_bus), m_cart() {}
+      m_cart(), m_cpuContext(std::make_unique<CPU>(m_bus)) {}
 void delay(uint32_t ms) { SDL_Delay(ms); }
 
 int Emu::emu_run(int argc, char **argv) {
@@ -32,7 +34,7 @@ int Emu::emu_run(int argc, char **argv) {
       delay(10);
       continue;
     }
-    if (!m_cpu.step()) {
+    if (!m_cpuContext.getCPU()->step()) {
       std::cout << "CPU Stopped\n";
       return -3;
     }
